@@ -63,8 +63,8 @@ class FairyTalerPoseImageSelector:
             },
         }
 
-    RETURN_TYPES = ("IMAGE",)
-    RETURN_NAMES = ("image",)
+    RETURN_TYPES = ("IMAGE", "STRING")
+    RETURN_NAMES = ("image", "prompt")
     FUNCTION = "select"
     CATEGORY = "FairyTaler/Poses"
 
@@ -107,8 +107,19 @@ class FairyTalerPoseImageSelector:
         with Image.open(img_path) as im:
             im.load()
             image_tensor = _pil_to_comfy(im)
+        # Load corresponding .txt prompt if present (same stem)
+        stem, _ = os.path.splitext(os.path.basename(img_path))
+        txt_path = os.path.join(folder_path, f"{stem}.txt")
+        prompt_text = ""
+        try:
+            if os.path.isfile(txt_path):
+                with open(txt_path, "r", encoding="utf-8", errors="ignore") as f:
+                    prompt_text = f.read().strip()
+        except Exception:
+            # If reading fails, keep prompt empty
+            prompt_text = ""
 
-        return (image_tensor,)
+        return (image_tensor, prompt_text)
 
 
 NODE_CLASS_MAPPINGS = {
