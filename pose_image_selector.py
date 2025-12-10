@@ -3,6 +3,7 @@ import random
 from typing import List, Tuple
 
 import numpy as np
+import torch
 from PIL import Image
 
 
@@ -31,12 +32,13 @@ def _list_images(folder_path: str) -> List[str]:
 
 
 def _pil_to_comfy(image: Image.Image):
-    """Convert PIL image to ComfyUI IMAGE tensor format: float32 [1,H,W,C] in range 0..1."""
+    """Convert PIL image to ComfyUI IMAGE tensor format: torch.float32 [1,H,W,C] in range 0..1."""
     if image.mode != "RGB":
         image = image.convert("RGB")
     arr = np.array(image).astype(np.float32) / 255.0  # H,W,C
     arr = np.expand_dims(arr, axis=0)  # 1,H,W,C
-    return arr
+    tensor = torch.from_numpy(arr)  # on CPU by default
+    return tensor
 
 
 class FairyTalerPoseImageSelector:
