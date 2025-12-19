@@ -72,14 +72,16 @@ class FairyTalerPoseImageSelector:
         folders = _list_folders(POSES_DIR)
         target = None
 
-        key = keyword.strip()
+        # Clean keyword: strip whitespace/newlines, replace spaces with underscores, and lowercase (snake_case)
+        key = keyword.strip().replace(" ", "_").lower()
+        
         for d in folders:
             if match_mode == "exact":
                 if d == key:
                     target = d
                     break
             else:  # case-insensitive
-                if d.lower() == key.lower():
+                if d.lower() == key:
                     target = d
                     break
 
