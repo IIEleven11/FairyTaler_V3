@@ -10,7 +10,6 @@ A simple ComfyUI custom node that takes a keyword, matches it to a folder inside
 - `match_mode` (enum): `exact` or `case-insensitive` name matching.
 - `fallback_to_any` (boolean): If no match is found, pick a random folder.
 - `seed` (int): Seed for deterministic random selection.
-- `choose_from` (optional enum): Directly pick a folder from discovered options.
 
 ## Output
 - `image` (`IMAGE`): A ComfyUI-compatible image tensor ([1, H, W, C], float32, 0..1).

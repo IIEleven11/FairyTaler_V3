@@ -58,9 +58,6 @@ class FairyTalerPoseImageSelector:
                 "fallback_to_any": ("BOOLEAN", {"default": True}),
                 "seed": ("INT", {"default": 0, "min": 0, "max": 2**31 - 1}),
             },
-            "optional": {
-                "choose_from": (folders if folders else ["<no-folders-found>"] ,),
-            },
         }
 
     RETURN_TYPES = ("IMAGE", "STRING")
@@ -68,26 +65,23 @@ class FairyTalerPoseImageSelector:
     FUNCTION = "select"
     CATEGORY = "FairyTaler/Poses"
 
-    def select(self, keyword: str, match_mode: str = "exact", fallback_to_any: bool = True, seed: int = 0, choose_from: str = None):
+    def select(self, keyword: str, match_mode: str = "exact", fallback_to_any: bool = True, seed: int = 0):
         rng = random.Random(seed) if seed else random.Random()
 
         # Resolve target folder by keyword
         folders = _list_folders(POSES_DIR)
         target = None
 
-        if choose_from and os.path.isdir(os.path.join(POSES_DIR, choose_from)):
-            target = choose_from
-        else:
-            key = keyword.strip()
-            for d in folders:
-                if match_mode == "exact":
-                    if d == key:
-                        target = d
-                        break
-                else:  # case-insensitive
-                    if d.lower() == key.lower():
-                        target = d
-                        break
+        key = keyword.strip()
+        for d in folders:
+            if match_mode == "exact":
+                if d == key:
+                    target = d
+                    break
+            else:  # case-insensitive
+                if d.lower() == key.lower():
+                    target = d
+                    break
 
         # Fallback to any folder if requested
         if target is None and fallback_to_any and folders:
